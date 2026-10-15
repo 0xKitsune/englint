@@ -1,0 +1,6 @@
+max_sentence_words = 30
+# Passive constructions and em dashes can be useful. Disable checks for your style.
+disabled = []
+
+[severity]
+repeated-word = "warning"
