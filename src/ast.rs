@@ -20,6 +20,7 @@ pub struct Position {
 pub struct Document {
     source: String,
     paragraphs: Vec<Paragraph>,
+    pub(crate) markdown: bool,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
@@ -68,7 +69,27 @@ impl Document {
         if let Some(begin) = start {
             paragraphs.push(paragraph(&source, begin, source.len()));
         }
-        Self { source, paragraphs }
+        Self {
+            source,
+            paragraphs,
+            markdown: false,
+        }
+    }
+
+    /// Parse Markdown prose islands, retaining offsets in the original source.
+    /// Code, HTML, images, front matter and link destinations are excluded.
+    pub fn parse_markdown(source: impl Into<String>) -> Self {
+        let source = source.into();
+        let ranges = crate::markdown::prose_ranges(&source);
+        let paragraphs = ranges
+            .into_iter()
+            .map(|r| paragraph(&source, r.start, r.end))
+            .collect();
+        Self {
+            source,
+            paragraphs,
+            markdown: true,
+        }
     }
 
     pub fn source(&self) -> &str {

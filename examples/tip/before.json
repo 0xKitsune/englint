@@ -1,0 +1,276 @@
+[
+  {
+    "path": "examples/tip/before.md",
+    "diagnostics": [
+      {
+        "rule": "required-section",
+        "severity": "error",
+        "span": {
+          "start": 0,
+          "end": 0
+        },
+        "message": "Add a Markdown heading and content for 'Assumptions'.",
+        "suggestion": null,
+        "position": {
+          "line": 1,
+          "column": 1
+        }
+      },
+      {
+        "rule": "required-section",
+        "severity": "error",
+        "span": {
+          "start": 0,
+          "end": 0
+        },
+        "message": "Add a Markdown heading and content for 'Tooling'.",
+        "suggestion": null,
+        "position": {
+          "line": 1,
+          "column": 1
+        }
+      },
+      {
+        "rule": "required-section",
+        "severity": "error",
+        "span": {
+          "start": 0,
+          "end": 0
+        },
+        "message": "Add a Markdown heading and content for 'Observability'.",
+        "suggestion": null,
+        "position": {
+          "line": 1,
+          "column": 1
+        }
+      },
+      {
+        "rule": "required-section",
+        "severity": "error",
+        "span": {
+          "start": 0,
+          "end": 0
+        },
+        "message": "Add a Markdown heading and content for 'Threat Model'.",
+        "suggestion": null,
+        "position": {
+          "line": 1,
+          "column": 1
+        }
+      },
+      {
+        "rule": "forbidden-term",
+        "severity": "error",
+        "span": {
+          "start": 131,
+          "end": 143
+        },
+        "message": "Describe the protocol behavior and its motivation.",
+        "suggestion": null,
+        "position": {
+          "line": 11,
+          "column": 11
+        }
+      },
+      {
+        "rule": "forbidden-term",
+        "severity": "error",
+        "span": {
+          "start": 148,
+          "end": 154
+        },
+        "message": "Describe the mechanism; do not assume the reader finds it simple.",
+        "suggestion": {
+          "replacement": ""
+        },
+        "position": {
+          "line": 11,
+          "column": 28
+        }
+      },
+      {
+        "rule": "plain-word",
+        "severity": "advice",
+        "span": {
+          "start": 155,
+          "end": 162
+        },
+        "message": "Consider 'use' if it preserves the meaning.",
+        "suggestion": {
+          "replacement": "use"
+        },
+        "position": {
+          "line": 11,
+          "column": 35
+        }
+      },
+      {
+        "rule": "vague-spec",
+        "severity": "warning",
+        "span": {
+          "start": 165,
+          "end": 171
+        },
+        "message": "Specify the bound, condition, or exhaustive behavior; review context before changing this term.",
+        "suggestion": null,
+        "position": {
+          "line": 11,
+          "column": 45
+        }
+      },
+      {
+        "rule": "wordy-phrase",
+        "severity": "error",
+        "span": {
+          "start": 190,
+          "end": 201
+        },
+        "message": "Use 'to'.",
+        "suggestion": {
+          "replacement": "to"
+        },
+        "position": {
+          "line": 11,
+          "column": 70
+        }
+      },
+      {
+        "rule": "plain-word",
+        "severity": "advice",
+        "span": {
+          "start": 202,
+          "end": 212
+        },
+        "message": "Consider 'help' if it preserves the meaning.",
+        "suggestion": {
+          "replacement": "help"
+        },
+        "position": {
+          "line": 11,
+          "column": 82
+        }
+      },
+      {
+        "rule": "vague-spec",
+        "severity": "warning",
+        "span": {
+          "start": 213,
+          "end": 221
+        },
+        "message": "Specify the bound, condition, or exhaustive behavior; review context before changing this term.",
+        "suggestion": null,
+        "position": {
+          "line": 11,
+          "column": 93
+        }
+      },
+      {
+        "rule": "vague-attribution",
+        "severity": "warning",
+        "span": {
+          "start": 249,
+          "end": 264
+        },
+        "message": "Name the experts and cite their evidence.",
+        "suggestion": null,
+        "position": {
+          "line": 15,
+          "column": 1
+        }
+      },
+      {
+        "rule": "vague-spec",
+        "severity": "warning",
+        "span": {
+          "start": 278,
+          "end": 282
+        },
+        "message": "Specify the bound, condition, or exhaustive behavior; review context before changing this term.",
+        "suggestion": null,
+        "position": {
+          "line": 15,
+          "column": 30
+        }
+      },
+      {
+        "rule": "stacked-hedges",
+        "severity": "warning",
+        "span": {
+          "start": 317,
+          "end": 334
+        },
+        "message": "Choose one hedge, or state the evidence directly.",
+        "suggestion": null,
+        "position": {
+          "line": 19,
+          "column": 15
+        }
+      },
+      {
+        "rule": "vague-spec",
+        "severity": "warning",
+        "span": {
+          "start": 352,
+          "end": 366
+        },
+        "message": "Specify the bound, condition, or exhaustive behavior; review context before changing this term.",
+        "suggestion": null,
+        "position": {
+          "line": 19,
+          "column": 50
+        }
+      },
+      {
+        "rule": "placeholder",
+        "severity": "error",
+        "span": {
+          "start": 368,
+          "end": 372
+        },
+        "message": "Resolve this placeholder before review.",
+        "suggestion": null,
+        "position": {
+          "line": 19,
+          "column": 66
+        }
+      },
+      {
+        "rule": "empty-section",
+        "severity": "error",
+        "span": {
+          "start": 390,
+          "end": 404
+        },
+        "message": "Explain 'Invariants', or state why it does not apply.",
+        "suggestion": null,
+        "position": {
+          "line": 21,
+          "column": 1
+        }
+      }
+    ],
+    "metrics": {
+      "words": 43,
+      "sentences": 10,
+      "longest_sentence_words": 13,
+      "findings": 17,
+      "findings_per_100_words": 39.53488372093023,
+      "by_rule": {
+        "empty-section": 1,
+        "forbidden-term": 2,
+        "placeholder": 1,
+        "plain-word": 2,
+        "required-section": 4,
+        "stacked-hedges": 1,
+        "vague-attribution": 1,
+        "vague-spec": 4,
+        "wordy-phrase": 1
+      },
+      "by_severity": {
+        "advice": 2,
+        "error": 9,
+        "warning": 6
+      }
+    }
+  }
+]

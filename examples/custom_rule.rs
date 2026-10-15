@@ -1,4 +1,4 @@
-use english_ast::{Diagnostic, Document, Linter, Rule, RuleInfo, Severity};
+use englint::{Diagnostic, Document, Linter, Rule, RuleInfo, Severity};
 
 struct NoTodo;
 impl Rule for NoTodo {

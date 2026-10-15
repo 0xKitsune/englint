@@ -1,0 +1,15 @@
+[
+  {
+    "path": "examples/prose/after.md",
+    "diagnostics": [],
+    "metrics": {
+      "words": 21,
+      "sentences": 3,
+      "longest_sentence_words": 7,
+      "findings": 0,
+      "findings_per_100_words": 0.0,
+      "by_rule": {},
+      "by_severity": {}
+    }
+  }
+]

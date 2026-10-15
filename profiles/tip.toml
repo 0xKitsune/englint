@@ -1,0 +1,14 @@
+profile = "tip"
+max_sentence_words = 30
+
+[[forbidden]]
+term = "game changer"
+reason = "Describe the protocol behavior and its motivation."
+
+[[forbidden]]
+term = "simply"
+reason = "Describe the mechanism; do not assume the reader finds it simple."
+replacement = ""
+
+[severity]
+wordy-phrase = "error"

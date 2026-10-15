@@ -1,0 +1,15 @@
+[
+  {
+    "path": "examples/tip/after.md",
+    "diagnostics": [],
+    "metrics": {
+      "words": 348,
+      "sentences": 45,
+      "longest_sentence_words": 15,
+      "findings": 0,
+      "findings_per_100_words": 0.0,
+      "by_rule": {},
+      "by_severity": {}
+    }
+  }
+]

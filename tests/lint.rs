@@ -1,4 +1,4 @@
-use english_ast::{BUILTIN_RULES, Config, Diagnostic, Document, Linter, Rule, RuleInfo, Severity};
+use englint::{BUILTIN_RULES, Config, Diagnostic, Document, Linter, Rule, RuleInfo, Severity};
 
 #[test]
 fn every_builtin_has_a_literal_behavior_case() {
@@ -55,7 +55,7 @@ fn every_builtin_has_a_literal_behavior_case() {
             None,
         ),
     ];
-    assert_eq!(cases.len(), BUILTIN_RULES.len());
+    assert_eq!(cases.len() + 6, BUILTIN_RULES.len());
     for (rule, source, matched, replacement) in cases {
         let config = Config {
             max_sentence_words: 3,

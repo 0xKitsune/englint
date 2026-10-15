@@ -5,7 +5,7 @@ use std::{
 };
 
 fn cli(args: &[&str], input: &str) -> Output {
-    let mut child = Command::new(env!("CARGO_BIN_EXE_english-ast"))
+    let mut child = Command::new(env!("CARGO_BIN_EXE_englint"))
         .args(args)
         .stdin(Stdio::piped())
         .stdout(Stdio::piped())
@@ -46,7 +46,7 @@ fn exit_thresholds_and_disabling_are_effective() {
         assert_eq!(output.status.code(), Some(expected), "{args:?}");
     }
     let output = cli(
-        &["--config", "english-ast.toml", "tests/fixtures/clean.txt"],
+        &["--config", "englint.toml", "tests/fixtures/clean.txt"],
         "",
     );
     assert_eq!(output.status.code(), Some(0));
@@ -101,7 +101,7 @@ fn invalid_inputs_exit_two_without_partial_output() {
         assert!(output.stdout.is_empty());
         assert!(!output.stderr.is_empty());
     }
-    let output = Command::new(env!("CARGO_BIN_EXE_english-ast"))
+    let output = Command::new(env!("CARGO_BIN_EXE_englint"))
         .stdin(Stdio::piped())
         .stdout(Stdio::piped())
         .stderr(Stdio::piped())
@@ -117,6 +117,83 @@ fn catalog_is_machine_readable() {
     let output = cli(&["--list-rules", "--format", "json"], "");
     assert_eq!(output.status.code(), Some(0));
     let json: Value = serde_json::from_slice(&output.stdout).unwrap();
-    assert_eq!(json.as_array().unwrap().len(), 11);
-    assert_eq!(json[0]["id"], "plain-word");
+    assert_eq!(json.as_array().unwrap().len(), 17);
+    assert_eq!(json[0]["id"], "forbidden-term");
+}
+
+#[test]
+fn profiles_select_markdown_and_report_metrics() {
+    let output = cli(
+        &["--profile", "tip", "--format", "json"],
+        "# Abstract\n\nUse `utilize` here.",
+    );
+    assert_eq!(output.status.code(), Some(1));
+    let json: Value = serde_json::from_slice(&output.stdout).unwrap();
+    assert_eq!(json[0]["metrics"]["findings"], 7);
+    assert_eq!(json[0]["metrics"]["by_rule"]["required-section"], 7);
+    assert!(
+        json[0]["diagnostics"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .all(|d| d["rule"] == "required-section")
+    );
+    let output = cli(
+        &["--config", "profiles/tip.toml", "--profile", "plain"],
+        "Precise prose.",
+    );
+    assert_eq!(output.status.code(), Some(0));
+    let output = cli(
+        &["--input-format", "markdown", "--stats"],
+        "`utilize` tools.",
+    );
+    assert_eq!(output.status.code(), Some(0));
+    assert!(
+        String::from_utf8(output.stdout)
+            .unwrap()
+            .contains("0 findings")
+    );
+    let output = cli(&["--profile", "typo"], "");
+    assert_eq!(output.status.code(), Some(2));
+}
+
+#[test]
+fn checked_in_example_reports_are_reproducible() {
+    for (directory, config, expected) in [
+        ("prose", "englint.toml", [1, 0]),
+        ("technical-spec", "profiles/technical-spec.toml", [1, 0]),
+        ("tip", "profiles/tip.toml", [1, 0]),
+    ] {
+        for (variant, status) in ["before", "after"].into_iter().zip(expected) {
+            let input = format!("examples/{directory}/{variant}.md");
+            let output = cli(
+                &[
+                    "--config",
+                    config,
+                    "--input-format",
+                    "markdown",
+                    "--format",
+                    "json",
+                    "--fail-on",
+                    "advice",
+                    &input,
+                ],
+                "",
+            );
+            assert_eq!(
+                output.status.code(),
+                Some(status),
+                "{input}: {}",
+                String::from_utf8_lossy(&output.stderr)
+            );
+            let actual: Value = serde_json::from_slice(&output.stdout).unwrap();
+            let saved =
+                std::fs::read_to_string(format!("examples/{directory}/{variant}.json")).unwrap();
+            let expected: Value = serde_json::from_str(&saved).unwrap();
+            assert_eq!(actual, expected, "regenerate reports for {input}");
+            if variant == "after" {
+                assert_eq!(actual[0]["metrics"]["findings"], 0);
+            }
+        }
+    }
 }

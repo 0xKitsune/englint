@@ -1,4 +1,4 @@
-use english_ast::{Document, Span, TokenKind};
+use englint::{Document, Span, TokenKind};
 
 #[test]
 fn paragraphs_sentences_and_source_spans() {

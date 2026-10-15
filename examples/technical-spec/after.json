@@ -1,0 +1,15 @@
+[
+  {
+    "path": "examples/technical-spec/after.md",
+    "diagnostics": [],
+    "metrics": {
+      "words": 190,
+      "sentences": 28,
+      "longest_sentence_words": 14,
+      "findings": 0,
+      "findings_per_100_words": 0.0,
+      "by_rule": {},
+      "by_severity": {}
+    }
+  }
+]

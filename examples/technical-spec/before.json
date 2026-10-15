@@ -1,0 +1,203 @@
+[
+  {
+    "path": "examples/technical-spec/before.md",
+    "diagnostics": [
+      {
+        "rule": "required-section",
+        "severity": "error",
+        "span": {
+          "start": 0,
+          "end": 0
+        },
+        "message": "Add a Markdown heading and content for 'Compatibility'.",
+        "suggestion": null,
+        "position": {
+          "line": 1,
+          "column": 1
+        }
+      },
+      {
+        "rule": "required-section",
+        "severity": "error",
+        "span": {
+          "start": 0,
+          "end": 0
+        },
+        "message": "Add a Markdown heading and content for 'Test plan'.",
+        "suggestion": null,
+        "position": {
+          "line": 1,
+          "column": 1
+        }
+      },
+      {
+        "rule": "vague-spec",
+        "severity": "warning",
+        "span": {
+          "start": 16,
+          "end": 22
+        },
+        "message": "Specify the bound, condition, or exhaustive behavior; review context before changing this term.",
+        "suggestion": null,
+        "position": {
+          "line": 3,
+          "column": 6
+        }
+      },
+      {
+        "rule": "forbidden-term",
+        "severity": "error",
+        "span": {
+          "start": 32,
+          "end": 46
+        },
+        "message": "State the latency or throughput target and its measurement conditions.",
+        "suggestion": null,
+        "position": {
+          "line": 3,
+          "column": 22
+        }
+      },
+      {
+        "rule": "vague-spec",
+        "severity": "warning",
+        "span": {
+          "start": 42,
+          "end": 46
+        },
+        "message": "Specify the bound, condition, or exhaustive behavior; review context before changing this term.",
+        "suggestion": null,
+        "position": {
+          "line": 3,
+          "column": 32
+        }
+      },
+      {
+        "rule": "wordy-phrase",
+        "severity": "warning",
+        "span": {
+          "start": 48,
+          "end": 59
+        },
+        "message": "Use 'to'.",
+        "suggestion": {
+          "replacement": "To"
+        },
+        "position": {
+          "line": 3,
+          "column": 38
+        }
+      },
+      {
+        "rule": "plain-word",
+        "severity": "advice",
+        "span": {
+          "start": 81,
+          "end": 88
+        },
+        "message": "Consider 'use' if it preserves the meaning.",
+        "suggestion": {
+          "replacement": "use"
+        },
+        "position": {
+          "line": 3,
+          "column": 71
+        }
+      },
+      {
+        "rule": "plain-word",
+        "severity": "advice",
+        "span": {
+          "start": 89,
+          "end": 97
+        },
+        "message": "Consider 'many' if it preserves the meaning.",
+        "suggestion": {
+          "replacement": "many"
+        },
+        "position": {
+          "line": 3,
+          "column": 79
+        }
+      },
+      {
+        "rule": "vague-attribution",
+        "severity": "warning",
+        "span": {
+          "start": 128,
+          "end": 143
+        },
+        "message": "Name the experts and cite their evidence.",
+        "suggestion": null,
+        "position": {
+          "line": 7,
+          "column": 1
+        }
+      },
+      {
+        "rule": "vague-spec",
+        "severity": "warning",
+        "span": {
+          "start": 220,
+          "end": 229
+        },
+        "message": "Specify the bound, condition, or exhaustive behavior; review context before changing this term.",
+        "suggestion": null,
+        "position": {
+          "line": 11,
+          "column": 32
+        }
+      },
+      {
+        "rule": "placeholder",
+        "severity": "error",
+        "span": {
+          "start": 231,
+          "end": 234
+        },
+        "message": "Resolve this placeholder before review.",
+        "suggestion": null,
+        "position": {
+          "line": 11,
+          "column": 43
+        }
+      },
+      {
+        "rule": "empty-section",
+        "severity": "error",
+        "span": {
+          "start": 253,
+          "end": 264
+        },
+        "message": "Explain 'Security', or state why it does not apply.",
+        "suggestion": null,
+        "position": {
+          "line": 13,
+          "column": 1
+        }
+      }
+    ],
+    "metrics": {
+      "words": 36,
+      "sentences": 9,
+      "longest_sentence_words": 8,
+      "findings": 12,
+      "findings_per_100_words": 33.333333333333336,
+      "by_rule": {
+        "empty-section": 1,
+        "forbidden-term": 1,
+        "placeholder": 1,
+        "plain-word": 2,
+        "required-section": 2,
+        "vague-attribution": 1,
+        "vague-spec": 3,
+        "wordy-phrase": 1
+      },
+      "by_severity": {
+        "advice": 2,
+        "error": 5,
+        "warning": 5
+      }
+    }
+  }
+]

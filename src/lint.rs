@@ -1,4 +1,4 @@
-use crate::{Document, Sentence, Span, TokenKind};
+use crate::{Document, ForbiddenTerm, Profile, Sentence, Span, TokenKind};
 use serde::{Deserialize, Serialize};
 use std::collections::{BTreeMap, BTreeSet};
 
@@ -33,6 +33,36 @@ pub struct RuleInfo {
 }
 
 pub const BUILTIN_RULES: &[RuleInfo] = &[
+    RuleInfo {
+        id: "forbidden-term",
+        description: "Avoid configured words and phrases",
+        severity: Severity::Error,
+    },
+    RuleInfo {
+        id: "required-section",
+        description: "Include each required Markdown section",
+        severity: Severity::Error,
+    },
+    RuleInfo {
+        id: "empty-section",
+        description: "Provide content beneath required section headings",
+        severity: Severity::Error,
+    },
+    RuleInfo {
+        id: "duplicate-section",
+        description: "Use each required section heading once",
+        severity: Severity::Warning,
+    },
+    RuleInfo {
+        id: "vague-spec",
+        description: "Replace vague requirements with measurable behavior",
+        severity: Severity::Warning,
+    },
+    RuleInfo {
+        id: "placeholder",
+        description: "Resolve unfinished specification text",
+        severity: Severity::Error,
+    },
     RuleInfo {
         id: "plain-word",
         description: "Prefer familiar words to inflated vocabulary",
@@ -95,6 +125,10 @@ pub const BUILTIN_RULES: &[RuleInfo] = &[
 #[serde(default, deny_unknown_fields)]
 pub struct Config {
     pub max_sentence_words: usize,
+    pub profile: Profile,
+    pub forbidden: Vec<ForbiddenTerm>,
+    /// None uses profile defaults; an empty list disables section requirements.
+    pub required_sections: Option<Vec<String>>,
     pub disabled: BTreeSet<String>,
     pub severity: BTreeMap<String, Severity>,
 }
@@ -103,6 +137,9 @@ impl Default for Config {
     fn default() -> Self {
         Self {
             max_sentence_words: 30,
+            profile: Profile::Plain,
+            forbidden: Vec::new(),
+            required_sections: None,
             disabled: BTreeSet::new(),
             severity: BTreeMap::new(),
         }
@@ -144,6 +181,26 @@ impl Linter {
         if self.config.max_sentence_words == 0 {
             return Err("max_sentence_words must be greater than zero".into());
         }
+        for term in &self.config.forbidden {
+            let parsed = Document::parse(&term.term);
+            let words: Vec<_> = parsed.sentences().flat_map(|s| s.words()).collect();
+            if words.is_empty()
+                || term.reason.trim().is_empty()
+                || !contiguous(&parsed, &words)
+                || words.first().unwrap().span.start != 0
+                || words.last().unwrap().span.end != term.term.len()
+            {
+                return Err("forbidden terms must contain only words separated by whitespace and a nonempty reason".into());
+            }
+        }
+        if let Some(sections) = &self.config.required_sections {
+            let mut seen = BTreeSet::new();
+            for section in sections {
+                if section.trim().is_empty() || !seen.insert(section.trim().to_lowercase()) {
+                    return Err("required_sections must contain nonempty, unique titles".into());
+                }
+            }
+        }
         let mut ids: BTreeSet<_> = BUILTIN_RULES.iter().map(|r| r.id).collect();
         for rule in &self.custom {
             if !ids.insert(rule.info().id) {
@@ -173,6 +230,7 @@ impl Linter {
                 &mut diagnostics,
             );
         }
+        self.check_policy(document, &mut diagnostics);
         for rule in &self.custom {
             if !self.config.disabled.contains(rule.info().id) {
                 rule.check(document, &mut diagnostics);
@@ -188,6 +246,110 @@ impl Linter {
             (a.span.start, a.span.end, &a.rule).cmp(&(b.span.start, b.span.end, &b.rule))
         });
         diagnostics
+    }
+    fn check_policy(&self, document: &Document, out: &mut Vec<Diagnostic>) {
+        for sentence in document.sentences() {
+            for term in &self.config.forbidden {
+                check_term(
+                    document,
+                    sentence,
+                    &term.term,
+                    "forbidden-term",
+                    &term.reason,
+                    term.replacement.as_deref(),
+                    out,
+                );
+            }
+            if self.config.profile != Profile::Plain {
+                for term in [
+                    "fast",
+                    "efficient",
+                    "seamless",
+                    "robust",
+                    "user-friendly",
+                    "as appropriate",
+                    "as needed",
+                    "etc",
+                    "and so on",
+                ] {
+                    check_term(
+                        document,
+                        sentence,
+                        term,
+                        "vague-spec",
+                        "Specify the bound, condition, or exhaustive behavior; review context before changing this term.",
+                        None,
+                        out,
+                    );
+                }
+                for term in ["TODO", "TBD", "FIXME", "XXX"] {
+                    check_term(
+                        document,
+                        sentence,
+                        term,
+                        "placeholder",
+                        "Resolve this placeholder before review.",
+                        None,
+                        out,
+                    );
+                }
+            }
+        }
+        let defaults = self
+            .config
+            .profile
+            .required_sections()
+            .iter()
+            .map(|s| s.to_string())
+            .collect::<Vec<_>>();
+        let required = self.config.required_sections.as_ref().unwrap_or(&defaults);
+        if required.is_empty() {
+            return;
+        }
+        let headings = if document.markdown {
+            crate::markdown::headings(document.source())
+        } else {
+            Vec::new()
+        };
+        for title in required {
+            let matches: Vec<_> = headings
+                .iter()
+                .filter(|h| h.title.trim().eq_ignore_ascii_case(title.trim()))
+                .collect();
+            if matches.is_empty() {
+                emit(
+                    out,
+                    "required-section",
+                    Span { start: 0, end: 0 },
+                    format!("Add a Markdown heading and content for '{title}'."),
+                    None,
+                );
+            }
+            for (index, heading) in matches.iter().enumerate() {
+                let span = Span {
+                    start: heading.range.start,
+                    end: heading.range.end,
+                };
+                if index > 0 {
+                    emit(
+                        out,
+                        "duplicate-section",
+                        span,
+                        format!("Merge duplicate '{title}' sections."),
+                        None,
+                    );
+                }
+                if !heading.content {
+                    emit(
+                        out,
+                        "empty-section",
+                        span,
+                        format!("Explain '{title}', or state why it does not apply."),
+                        None,
+                    );
+                }
+            }
+        }
     }
 }
 
@@ -520,5 +682,47 @@ fn match_case(original: &str, replacement: &str) -> String {
         })
     } else {
         replacement.into()
+    }
+}
+
+fn check_term(
+    doc: &Document,
+    sentence: &Sentence,
+    term: &str,
+    rule: &str,
+    reason: &str,
+    replacement: Option<&str>,
+    out: &mut Vec<Diagnostic>,
+) {
+    let pattern: Vec<_> = term
+        .split_whitespace()
+        .map(|w| w.to_lowercase().replace('’', "'"))
+        .collect();
+    if pattern.is_empty() {
+        return;
+    }
+    let words: Vec<_> = sentence.words().collect();
+    for window in words.windows(pattern.len()) {
+        if contiguous(doc, window)
+            && window.iter().zip(&pattern).all(|(word, expected)| {
+                doc.text(word.span)
+                    .unwrap()
+                    .to_lowercase()
+                    .replace('’', "'")
+                    == *expected
+            })
+        {
+            let span = Span {
+                start: window[0].span.start,
+                end: window.last().unwrap().span.end,
+            };
+            emit(
+                out,
+                rule,
+                span,
+                reason,
+                replacement.map(|r| match_case(doc.text(span).unwrap(), r)),
+            );
+        }
     }
 }

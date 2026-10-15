@@ -1,5 +1,7 @@
 use clap::{Parser, ValueEnum};
-use english_ast::{BUILTIN_RULES, Config, Diagnostic, Document, Linter, Position, Severity};
+use englint::{
+    BUILTIN_RULES, Config, Diagnostic, Document, Linter, Metrics, Position, Profile, Severity,
+};
 use serde::Serialize;
 use std::{
     fs,
@@ -22,6 +24,15 @@ struct Args {
     /// TOML settings. No implicit config discovery.
     #[arg(long)]
     config: Option<PathBuf>,
+    /// Writing policy. Overrides the profile in TOML.
+    #[arg(long, value_enum)]
+    profile: Option<Profile>,
+    /// Parse prose in Markdown; default for technical-spec and tip profiles.
+    #[arg(long, value_enum)]
+    input_format: Option<InputFormat>,
+    /// Print measurable lint counts alongside text diagnostics (always in JSON).
+    #[arg(long)]
+    stats: bool,
     /// Disable a rule by ID. Can be repeated.
     #[arg(long)]
     disable: Vec<String>,
@@ -34,6 +45,12 @@ struct Args {
     /// Print the built-in rule catalog.
     #[arg(long)]
     list_rules: bool,
+}
+
+#[derive(Clone, Copy, ValueEnum)]
+enum InputFormat {
+    Text,
+    Markdown,
 }
 
 #[derive(Clone, Copy, ValueEnum)]
@@ -59,6 +76,7 @@ struct LocatedDiagnostic {
 struct Report {
     path: String,
     diagnostics: Vec<LocatedDiagnostic>,
+    metrics: Metrics,
 }
 #[derive(Serialize)]
 struct AstReport {
@@ -71,7 +89,7 @@ fn main() -> ExitCode {
     match run(args) {
         Ok(failed) => ExitCode::from(u8::from(failed)),
         Err(message) => {
-            eprintln!("english-ast: {message}");
+            eprintln!("englint: {message}");
             ExitCode::from(2)
         }
     }
@@ -99,6 +117,16 @@ fn run(args: Args) -> Result<bool, String> {
         .map_err(|e| format!("{}: {e}", path.display()))?,
         None => Config::default(),
     };
+    if let Some(profile) = args.profile {
+        config.profile = profile;
+    }
+    let input_format = args
+        .input_format
+        .unwrap_or(if config.profile == Profile::Plain {
+            InputFormat::Text
+        } else {
+            InputFormat::Markdown
+        });
     config.disabled.extend(args.disable);
     if let Some(limit) = args.max_sentence_words {
         config.max_sentence_words = limit;
@@ -131,7 +159,10 @@ fn run(args: Args) -> Result<bool, String> {
             } else {
                 path.display().to_string()
             },
-            Document::parse(source),
+            match input_format {
+                InputFormat::Text => Document::parse(source),
+                InputFormat::Markdown => Document::parse_markdown(source),
+            },
         ));
     }
     if args.ast {
@@ -147,18 +178,22 @@ fn run(args: Args) -> Result<bool, String> {
     }
     let reports: Vec<_> = inputs
         .into_iter()
-        .map(|(path, document)| Report {
-            path,
-            diagnostics: linter
-                .check(&document)
-                .into_iter()
-                .map(|diagnostic| LocatedDiagnostic {
-                    position: document
-                        .position(diagnostic.span.start)
-                        .expect("rule must return a valid source offset"),
-                    diagnostic,
-                })
-                .collect(),
+        .map(|(path, document)| {
+            let diagnostics = linter.check(&document);
+            let metrics = Metrics::measure(&document, &diagnostics);
+            Report {
+                path,
+                metrics,
+                diagnostics: diagnostics
+                    .into_iter()
+                    .map(|diagnostic| LocatedDiagnostic {
+                        position: document
+                            .position(diagnostic.span.start)
+                            .expect("rule must return a valid source offset"),
+                        diagnostic,
+                    })
+                    .collect(),
+            }
         })
         .collect();
     match args.format {
@@ -168,6 +203,16 @@ fn run(args: Args) -> Result<bool, String> {
         ),
         Format::Text => {
             for report in &reports {
+                if args.stats {
+                    println!(
+                        "{}: {} words, {} sentences, {} findings ({:.2} per 100 words)",
+                        report.path,
+                        report.metrics.words,
+                        report.metrics.sentences,
+                        report.metrics.findings,
+                        report.metrics.findings_per_100_words
+                    );
+                }
                 for located in &report.diagnostics {
                     let d = &located.diagnostic;
                     println!(

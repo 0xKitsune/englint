@@ -1,0 +1,145 @@
+[
+  {
+    "path": "examples/prose/before.md",
+    "diagnostics": [
+      {
+        "rule": "wordy-phrase",
+        "severity": "warning",
+        "span": {
+          "start": 0,
+          "end": 11
+        },
+        "message": "Use 'to'.",
+        "suggestion": {
+          "replacement": "To"
+        },
+        "position": {
+          "line": 1,
+          "column": 1
+        }
+      },
+      {
+        "rule": "plain-word",
+        "severity": "advice",
+        "span": {
+          "start": 18,
+          "end": 25
+        },
+        "message": "Consider 'use' if it preserves the meaning.",
+        "suggestion": {
+          "replacement": "use"
+        },
+        "position": {
+          "line": 1,
+          "column": 19
+        }
+      },
+      {
+        "rule": "plain-word",
+        "severity": "advice",
+        "span": {
+          "start": 26,
+          "end": 34
+        },
+        "message": "Consider 'many' if it preserves the meaning.",
+        "suggestion": {
+          "replacement": "many"
+        },
+        "position": {
+          "line": 1,
+          "column": 27
+        }
+      },
+      {
+        "rule": "vague-attribution",
+        "severity": "warning",
+        "span": {
+          "start": 42,
+          "end": 57
+        },
+        "message": "Name the experts and cite their evidence.",
+        "suggestion": null,
+        "position": {
+          "line": 1,
+          "column": 43
+        }
+      },
+      {
+        "rule": "stacked-hedges",
+        "severity": "warning",
+        "span": {
+          "start": 63,
+          "end": 80
+        },
+        "message": "Choose one hedge, or state the evidence directly.",
+        "suggestion": null,
+        "position": {
+          "line": 1,
+          "column": 64
+        }
+      },
+      {
+        "rule": "repeated-word",
+        "severity": "warning",
+        "span": {
+          "start": 98,
+          "end": 105
+        },
+        "message": "Check this repeated word. Some repetitions are grammatical.",
+        "suggestion": null,
+        "position": {
+          "line": 1,
+          "column": 99
+        }
+      },
+      {
+        "rule": "passive-voice",
+        "severity": "advice",
+        "span": {
+          "start": 113,
+          "end": 124
+        },
+        "message": "Possible passive voice. Name the actor if the actor matters.",
+        "suggestion": null,
+        "position": {
+          "line": 1,
+          "column": 114
+        }
+      },
+      {
+        "rule": "generic-conclusion",
+        "severity": "advice",
+        "span": {
+          "start": 136,
+          "end": 159
+        },
+        "message": "End with a specific fact or next step.",
+        "suggestion": null,
+        "position": {
+          "line": 1,
+          "column": 137
+        }
+      }
+    ],
+    "metrics": {
+      "words": 24,
+      "sentences": 4,
+      "longest_sentence_words": 7,
+      "findings": 8,
+      "findings_per_100_words": 33.333333333333336,
+      "by_rule": {
+        "generic-conclusion": 1,
+        "passive-voice": 1,
+        "plain-word": 2,
+        "repeated-word": 1,
+        "stacked-hedges": 1,
+        "vague-attribution": 1,
+        "wordy-phrase": 1
+      },
+      "by_severity": {
+        "advice": 4,
+        "warning": 4
+      }
+    }
+  }
+]

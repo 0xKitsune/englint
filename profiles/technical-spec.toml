@@ -1,0 +1,11 @@
+profile = "technical-spec"
+max_sentence_words = 30
+
+[[forbidden]]
+term = "blazingly fast"
+reason = "State the latency or throughput target and its measurement conditions."
+
+[[forbidden]]
+term = "obviously"
+reason = "State the reasoning so the reader can check it."
+replacement = ""
