@@ -3,62 +3,6 @@
     "path": "examples/tip/before.md",
     "diagnostics": [
       {
-        "rule": "required-section",
-        "severity": "error",
-        "span": {
-          "start": 0,
-          "end": 0
-        },
-        "message": "Add a Markdown heading and content for 'Assumptions'.",
-        "suggestion": null,
-        "position": {
-          "line": 1,
-          "column": 1
-        }
-      },
-      {
-        "rule": "required-section",
-        "severity": "error",
-        "span": {
-          "start": 0,
-          "end": 0
-        },
-        "message": "Add a Markdown heading and content for 'Tooling'.",
-        "suggestion": null,
-        "position": {
-          "line": 1,
-          "column": 1
-        }
-      },
-      {
-        "rule": "required-section",
-        "severity": "error",
-        "span": {
-          "start": 0,
-          "end": 0
-        },
-        "message": "Add a Markdown heading and content for 'Observability'.",
-        "suggestion": null,
-        "position": {
-          "line": 1,
-          "column": 1
-        }
-      },
-      {
-        "rule": "required-section",
-        "severity": "error",
-        "span": {
-          "start": 0,
-          "end": 0
-        },
-        "message": "Add a Markdown heading and content for 'Threat Model'.",
-        "suggestion": null,
-        "position": {
-          "line": 1,
-          "column": 1
-        }
-      },
-      {
         "rule": "forbidden-term",
         "severity": "error",
         "span": {
@@ -233,34 +177,18 @@
           "line": 19,
           "column": 66
         }
-      },
-      {
-        "rule": "empty-section",
-        "severity": "error",
-        "span": {
-          "start": 390,
-          "end": 404
-        },
-        "message": "Explain 'Invariants', or state why it does not apply.",
-        "suggestion": null,
-        "position": {
-          "line": 21,
-          "column": 1
-        }
       }
     ],
     "metrics": {
       "words": 43,
       "sentences": 10,
       "longest_sentence_words": 13,
-      "findings": 17,
-      "findings_per_100_words": 39.53488372093023,
+      "findings": 12,
+      "findings_per_100_words": 27.906976744186046,
       "by_rule": {
-        "empty-section": 1,
         "forbidden-term": 2,
         "placeholder": 1,
         "plain-word": 2,
-        "required-section": 4,
         "stacked-hedges": 1,
         "vague-attribution": 1,
         "vague-spec": 4,
@@ -268,7 +196,7 @@
       },
       "by_severity": {
         "advice": 2,
-        "error": 9,
+        "error": 4,
         "warning": 6
       }
     }

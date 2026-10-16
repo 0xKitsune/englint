@@ -15,7 +15,7 @@
 //! linter.validate()?;
 //! let document = Document::parse_markdown("## Abstract\n\nA draft proposal.");
 //! let diagnostics = linter.check(&document);
-//! assert_eq!(Metrics::measure(&document, &diagnostics).findings, 7);
+//! assert_eq!(Metrics::measure(&document, &diagnostics).findings, 0);
 //! # Ok::<(), String>(())
 //! ```
 mod ast;

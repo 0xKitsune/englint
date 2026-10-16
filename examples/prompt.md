@@ -6,11 +6,11 @@ Use this prompt with an authoring agent. Supply the concrete change, source file
 
 Write a reviewable Tempo Improvement Proposal for the change described below. Read the supplied implementation and requirements before drafting. Save the result as `proposal.md`.
 
-Use the sections Abstract, Motivation, Assumptions, Specification, Tooling, Observability, Threat Model, and Invariants. Include a title and the metadata requested by the target repository's current TIP template. Englint does not validate metadata, so check it separately.
+Organize the proposal around the change. Do not add sections just to satisfy a template; the TIP profile does not require headings. Include a title and any metadata the target repository requires. Englint does not validate metadata, so check it separately.
 
 State the problem and resulting behavior first. Name the actor for each action. Define inputs, outputs, bounds, units, state transitions, failure behavior, and authorization checks. Describe behavior before activation, after activation, and when activation is unscheduled. Identify compatibility constraints and deployment ordering. State important behavior that remains unchanged.
 
-Explain tooling changes and production signals. Name the actors and trust boundaries. For each invariant, give a test case that can falsify it. Include boundary values and failure cases. If a section does not apply, explain why.
+Describe operational impacts where relevant to the change. For each invariant, give a test case that can falsify it. Include boundary values and failure cases.
 
 Use concrete claims and familiar words. Avoid promotional claims, unnamed evidence, stock introductions, repeated hedges, and vague requirements. Cite supplied evidence for claims. Do not invent measurements, protocol facts, references, or decisions to satisfy a lint.
 

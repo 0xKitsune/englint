@@ -24,16 +24,7 @@ impl Profile {
                 "Security",
                 "Test plan",
             ],
-            Self::Tip => &[
-                "Abstract",
-                "Motivation",
-                "Assumptions",
-                "Specification",
-                "Tooling",
-                "Observability",
-                "Threat Model",
-                "Invariants",
-            ],
+            Self::Tip => &[],
         }
     }
 }

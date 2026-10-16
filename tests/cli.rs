@@ -127,17 +127,10 @@ fn profiles_select_markdown_and_report_metrics() {
         &["--profile", "tip", "--format", "json"],
         "# Abstract\n\nUse `utilize` here.",
     );
-    assert_eq!(output.status.code(), Some(1));
+    assert_eq!(output.status.code(), Some(0));
     let json: Value = serde_json::from_slice(&output.stdout).unwrap();
-    assert_eq!(json[0]["metrics"]["findings"], 7);
-    assert_eq!(json[0]["metrics"]["by_rule"]["required-section"], 7);
-    assert!(
-        json[0]["diagnostics"]
-            .as_array()
-            .unwrap()
-            .iter()
-            .all(|d| d["rule"] == "required-section")
-    );
+    assert_eq!(json[0]["metrics"]["findings"], 0);
+    assert!(json[0]["diagnostics"].as_array().unwrap().is_empty());
     let output = cli(
         &["--config", "profiles/tip.toml", "--profile", "plain"],
         "Precise prose.",

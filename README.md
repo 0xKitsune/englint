@@ -129,7 +129,7 @@ forbidden-term = "error"
 
 Terms match whole words, ignore case, and never cross punctuation or sentence boundaries. Terms must contain words separated by whitespace. A replacement is optional. Use `disabled = ["forbidden-term"]` to disable the vocabulary policy.
 
-The default technical-spec sections are Summary, Motivation, Specification, Compatibility, Security, and Test plan. The TIP sections are Abstract, Motivation, Assumptions, Specification, Tooling, Observability, Threat Model, and Invariants. The TIP list follows [Tempo's public template at revision 07d8ec4](https://github.com/tempoxyz/tempo/blob/07d8ec4aaf9ca073d0aa61fe9ea7ec3a5bc823b2/tips/tip_template.md). It is a pinned policy, not a live dependency or an official Tempo validator.
+The TIP profile does not require sections or enforce a document template. The default technical-spec sections are Summary, Motivation, Specification, Compatibility, Security, and Test plan. Set `required_sections` explicitly if your project needs a section policy.
 
 Section matching ignores ASCII case and accepts ATX or setext headings at any level. Content in a subsection counts toward its parent. Code blocks count as section content. Comments alone do not. Override the list with `required_sections`; an empty list disables section requirements. A missing section has an empty span at byte zero. Empty and duplicate sections point to their headings.
 

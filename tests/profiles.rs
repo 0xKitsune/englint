@@ -86,20 +86,38 @@ fn invalid_policies_fail_before_linting() {
 }
 
 #[test]
-fn tip_template_sections_are_required_and_empty_or_duplicate_sections_fail() {
+fn tip_does_not_require_or_enforce_section_structure() {
     let linter = Linter::new(policy(Profile::Tip));
+    for source in [
+        "The validator checks the signature before execution.",
+        "## Abstract\n\n## Motivation\n\nA reason.\n\n## Motivation\n\nAnother reason.",
+    ] {
+        assert!(linter.check(&Document::parse_markdown(source)).is_empty());
+    }
+}
+
+#[test]
+fn explicit_section_policy_still_checks_missing_empty_and_duplicate_headings() {
+    let mut config = policy(Profile::Tip);
+    config.required_sections = Some(vec![
+        "Abstract".into(),
+        "Motivation".into(),
+        "Specification".into(),
+    ]);
+    let linter = Linter::new(config);
     let doc = Document::parse_markdown(
         "## Abstract\n\n## Motivation\n\nA reason.\n\n## Motivation\n\nAnother reason.",
     );
     let ds = linter.check(&doc);
     assert_eq!(
         ds.iter().filter(|d| d.rule == "required-section").count(),
-        6
+        1
     );
     assert_eq!(ds.iter().filter(|d| d.rule == "empty-section").count(), 1);
-    let duplicate = ds.iter().find(|d| d.rule == "duplicate-section").unwrap();
-    assert_eq!(doc.position(duplicate.span.start).unwrap().line, 7);
-    assert!(ds.iter().all(|d| doc.text(d.span).is_some()));
+    assert_eq!(
+        ds.iter().filter(|d| d.rule == "duplicate-section").count(),
+        1
+    );
 }
 
 #[test]
